@@ -15,12 +15,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
           USERNAME: ${{ github.repository_owner }}
-      - name: Commit & Push
+      - name: Set up authenticated remote
         env:
           PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+        run: |
+          git remote set-url origin https://x-access-token:${PERSONAL_TOKEN}@github.com/${{ github.repository_owner }}/${{ github.repository }}.git
+      - name: Commit & Push
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -A .
           git commit -m "generated" || echo "No changes to commit"
-          git push https://x-access-token:${PERSONAL_TOKEN}@github.com/${{ github.repository_owner }}/${{ github.repository }}.git HEAD:main
+          git push
